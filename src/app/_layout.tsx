@@ -1,8 +1,17 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 export default function RootLayout() {
-  return <Stack screenOptions={{headerShown : false}}>
+  const router = useRouter();
+  
+  let isAuth = false; 
+  useEffect(()=>{
+if(!isAuth){
+  router.replace("/(auth)/login")
+}
+  });
+  return(  <Stack screenOptions={{headerShown : false}}>
     <Stack.Screen name='(tabs)' />
-   
-  </Stack>;
+   <Stack.Screen name='(auth)' />
+  </Stack>);
 }
