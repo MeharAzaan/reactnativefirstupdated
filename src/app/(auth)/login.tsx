@@ -64,7 +64,7 @@ export default function LoginScreen() {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
-              router.push("/(auth)/signup");
+              router.push("/(auth)/homepage");
             }}
             style={styles.primaryButton}
           >

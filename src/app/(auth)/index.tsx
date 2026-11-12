@@ -17,7 +17,6 @@ export default function WelcomeScreen() {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.content}>
-        {/* Header Section */}
         <View style={styles.heroSection}>
           <View style={styles.logoBox}>
             <Text style={styles.logoText}>App</Text>
