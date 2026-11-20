@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/context/Authcontext";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 
@@ -10,8 +11,14 @@ if(!isAuth){
   router.replace("/(auth)/login")
 }
   });
-  return(  <Stack screenOptions={{headerShown : false}}>
+  return( 
+    <AuthProvider>
+
+    
+     <Stack screenOptions={{headerShown : false}}>
     <Stack.Screen name='(tabs)' />
    <Stack.Screen name='(auth)' />
-  </Stack>);
+  </Stack>
+  </AuthProvider>
+  );
 }

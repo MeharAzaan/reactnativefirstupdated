@@ -15,12 +15,10 @@ import { useRouter } from "expo-router";
 
 export default function SignupScreen() {
   const router = useRouter();
-
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -49,7 +47,7 @@ export default function SignupScreen() {
                 placeholderTextColor="#94A3B8"
                 autoCapitalize="words"
                 value={fullName}
-                onChangeText={setFullName}
+                onChangeText={setFullName} 
                 style={styles.input}
               />
             </View>

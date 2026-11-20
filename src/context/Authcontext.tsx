@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 export interface User{
     id : string , 
     name : string , 
@@ -10,12 +10,14 @@ export interface User{
 }
 interface AuthContextType {
     user : User | null;
+    signUp : (email:string,password : string)=>Promise<void>;
 }
 const AuthContext = createContext<AuthContextType  | undefined>(undefined);
 
 export const AuthProvider = ({children} : {children:ReactNode})=>{
     const [user, setUser]= useState<User |null>(null);
-    const Signin = async (email : string , password : string )=>{
+    const Signin = async (email:string,password:string)=>{};
+    const signUp = async (email : string , password : string )=>{
    const {data,error}=   await supabase.auth.signUp({
         email , password
      })
@@ -24,5 +26,12 @@ export const AuthProvider = ({children} : {children:ReactNode})=>{
         console.log(user);
      }
     }
-     return <AuthContext.Provider value = {{user }}>{children}</AuthContext.Provider>;
+     return <AuthContext.Provider value = {{user , signUp}}>{children}</AuthContext.Provider>;
+}
+export const useAuth = ()=>{
+    const context = useContext(AuthContext);
+    if(context == undefined){
+        throw new Error("must be inside the provider")
+    }
+    return context;
 }

@@ -9,13 +9,39 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/context/Authcontext";
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { signUp } = useAuth();
+
+  const handleSignup = async () => {
+    // Validate BEFORE setting loading, so early returns don't leave it stuck
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill all fields");
+      return;
+    }
+    if (password.length < 4) {
+      Alert.alert("Error", "Password must be at least 4 characters");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await signUp(email, password);
+    } catch {
+      Alert.alert("Error", "Failed to signup");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,6 +65,7 @@ export default function LoginScreen() {
               value={email}
               onChangeText={setEmail}
               style={styles.input}
+              editable={!isLoading}
             />
           </View>
 
@@ -51,24 +78,31 @@ export default function LoginScreen() {
               value={password}
               onChangeText={setPassword}
               style={styles.input}
+              editable={!isLoading}
             />
           </View>
 
-          <TouchableOpacity style={styles.forgotPassword} onPress={
-            ()=>{
-              router.push("/(auth)/forget_password")
-            }
-          }>
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => {
+              router.push("/(auth)/forget_password");
+            }}
+            disabled={isLoading}
+          >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => {
-              router.push("/(auth)/homepage");
-            }}
-            style={styles.primaryButton}
+            onPress={handleSignup}
+            style={[styles.primaryButton, isLoading && styles.primaryButtonDisabled]}
+            disabled={isLoading}
           >
-            <Text style={styles.primaryButtonText}>Sign In</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.primaryButtonText}>Sign Up</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.dividerContainer}>
@@ -78,8 +112,11 @@ export default function LoginScreen() {
           </View>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => {}}
+            onPress={() => {
+              router.push("/(auth)/signup");
+            }}
             style={styles.secondaryButton}
+            disabled={isLoading}
           >
             <Text style={styles.secondaryButtonText}>Create an Account</Text>
           </TouchableOpacity>
@@ -90,6 +127,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  // ...all your existing styles stay the same...
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
@@ -163,6 +201,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 4,
+  },
+  primaryButtonDisabled: {
+    opacity: 0.6,
   },
   primaryButtonText: {
     color: "#FFFFFF",
